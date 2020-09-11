@@ -591,8 +591,8 @@ function _setup_dovecot() {
 function _setup_dovecot_quota() {
     _notify 'task' 'Setting up Dovecot quota'
 
-    if [ "$ENABLE_LDAP" = 1 ] || [ "$SMTP_ONLY" = 1 ] || [ "$ENABLE_QUOTAS" = 0 ]; then
-      # Dovecot quota is disabled when using LDAP or SMTP_ONLY or when explicitly disabled
+    if [ "$SMTP_ONLY" = 1 ] || [ "$ENABLE_QUOTAS" = 0 ]; then
+      # Dovecot quota is disabled when using SMTP_ONLY or when explicitly disabled
 
       # disable dovecot quota in docevot confs
       if [ -f /etc/dovecot/conf.d/90-quota.conf ]; then
