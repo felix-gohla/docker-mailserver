@@ -1,0 +1,24 @@
+# Authentication for OAUTH2 users. Included from 10-auth.conf.
+#
+# <doc/wiki/AuthDatabase.LDAP.txt>
+
+auth_mechanisms = $auth_mechanisms xoauth2 oauthbearer
+auth_debug = yes
+auth_verbose = yes
+
+passdb {
+  driver = oauth2
+  mechanisms = oauthbearer xoauth2
+  args = /etc/dovecot/dovecot-oauth2.token.conf.ext
+}
+
+passdb {
+  driver = oauth2
+  mechanisms = plain login
+  args = /etc/dovecot/dovecot-oauth2.plain.conf.ext
+}
+
+userdb {
+  driver = static
+  args = uid=docker gid=docker home=/var/vmail/%d/%n
+}

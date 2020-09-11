@@ -276,6 +276,41 @@ DOVECOT_MAILBOX_FORMAT=maildir
 DOVECOT_AUTH_BIND=
 
 # -----------------------------------------------------------------------------------------------------------------------------
+# --------------------- OAUTH2 section ----------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------------------------------------------
+
+# A second container for the identity provider is necessary (e.g. https://www.keycloak.org/getting-started/getting-started-docker).
+
+# empty / 0 => OAUTH2 authentification is disabled
+# 1 => OAUTH2 authentification is enabled
+ENABLE_OAUTH2=
+
+# Must match a client ID in the identity provider.
+OAUTH2_CLIENT_ID=
+
+# Must match the corresponding client secret in the identity provider.
+OAUTH2_CLIENT_SECRET=
+
+# Introspection endpoint, used to gather extra fields and other information.
+OAUTH2_INTROSPECTION_URL=
+
+# How introspection is made, valid values are:
+#   auth    (GET request with Bearer authentication)
+#   get     (GET request with token appended to URL=
+#   post    (POST request with token=bearer_token as content)
+#   local   (perform local validation only)
+# empty => post
+OAUTH2_INTROSPECTION_MODE=
+
+# The URL to fetch tokens from (plain auth).
+OAUTH2_GRANT_URL=
+
+# The attribute-key encoded in the token that specifies the login name.
+# empty => email
+OAUTH2_USERNAME_ATTRIBUTE=
+
+
+# -----------------------------------------------------------------------------------------------------------------------------
 # ---------------- Postgrey section -------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------------------------------
 

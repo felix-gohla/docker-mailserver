@@ -17,6 +17,9 @@ DEFAULT_VARS["FETCHMAIL_POLL"]="${FETCHMAIL_POLL:="300"}"
 DEFAULT_VARS["ENABLE_LDAP"]="${ENABLE_LDAP:="0"}"
 DEFAULT_VARS["ENABLE_QUOTAS"]="${ENABLE_QUOTAS:="1"}"
 DEFAULT_VARS["LDAP_START_TLS"]="${LDAP_START_TLS:="no"}"
+DEFAULT_VARS["ENABLE_OAUTH2"]="${ENABLE_OAUTH2:="0"}"
+DEFAULT_VARS["OAUTH2_INTROSPECTION_MODE"]="${DOVECOT_MAILBOX_FORMAT:="post"}"
+DEFAULT_VARS["OAUTH2_USERNAME_ATTRIBUTE"]="${DOVECOT_MAILBOX_FORMAT:="email"}"
 DEFAULT_VARS["DOVECOT_TLS"]="${DOVECOT_TLS:="no"}"
 DEFAULT_VARS["DOVECOT_MAILBOX_FORMAT"]="${DOVECOT_MAILBOX_FORMAT:="maildir"}"
 DEFAULT_VARS["ENABLE_POSTGREY"]="${ENABLE_POSTGREY:="0"}"
@@ -108,6 +111,10 @@ function register_functions() {
 
 	if [ "$ENABLE_LDAP" = 1 ];then
 		_register_setup_function "_setup_ldap"
+	fi
+
+	if [ "$ENABLE_OAUTH2" = 1 ];then
+		_register_setup_function "_setup_oauth2"
 	fi
 
 	if [ "$ENABLE_SASLAUTHD" = 1 ];then
@@ -744,6 +751,20 @@ function _setup_ldap() {
 	[ -f /etc/postfix/ldap-aliases.cf -a -f /etc/postfix/ldap-groups.cf ] && \
 		postconf -e "virtual_alias_maps = ldap:/etc/postfix/ldap-aliases.cf, ldap:/etc/postfix/ldap-groups.cf" || \
 		_notify 'inf' "==> Warning: /etc/postfix/ldap-aliases.cf or /etc/postfix/ldap-groups.cf not found"
+
+	return 0
+}
+
+function _setup_oauth2() {
+	_notify 'task' 'Setting up OAUTH2'
+
+	_notify 'inf' "Configuring dovecot OAUTH2"
+	configomat.sh "OAUTH2_" "/etc/dovecot/dovecot-oauth2.plain.conf.ext"
+	configomat.sh "OAUTH2_" "/etc/dovecot/dovecot-oauth2.token.conf.ext"
+
+	_notify 'inf' "Enabling dovecot LDAP authentification"
+	sed -i -e '/\!include auth-oauth2\.conf\.ext/s/^#//' /etc/dovecot/conf.d/10-auth.conf
+	sed -i -e '/\!include auth-passwdfile\.inc/s/^/#/' /etc/dovecot/conf.d/10-auth.conf
 
 	return 0
 }

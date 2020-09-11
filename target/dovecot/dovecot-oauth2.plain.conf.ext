@@ -1,0 +1,9 @@
+client_id = id
+client_secret = secret
+grant_url = http://keycloak:8080/auth/realms/master/protocol/openid-connect/token
+introspection_mode = post
+introspection_url = http://keycloak:8080/auth/realms/master/protocol/openid-connect/token/introspect
+force_introspection = yes
+username_attribute = email
+use_grant_password = yes
+pass_attrs = host=127.0.0.1 proxy=y proxy_mech=xoauth2 pass=%{oauth2:access_token}

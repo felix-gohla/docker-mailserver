@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 ARG VCS_REF
 ARG VCS_VERSION
@@ -122,7 +122,7 @@ RUN echo "0 */6 * * * clamav /usr/bin/freshclam --quiet" > /etc/cron.d/clamav-fr
   rm -rf /var/log/clamav/
 
 # Configures Dovecot
-COPY target/dovecot/auth-passwdfile.inc target/dovecot/??-*.conf /etc/dovecot/conf.d/
+COPY target/dovecot/auth-*.inc target/dovecot/auth-*.conf.ext target/dovecot/??-*.conf /etc/dovecot/conf.d/
 COPY target/dovecot/scripts/quota-warning.sh /usr/local/bin/quota-warning.sh
 COPY target/dovecot/sieve/ /etc/dovecot/sieve/
 WORKDIR /usr/share/dovecot
@@ -147,6 +147,9 @@ RUN sed -i -e 's/include_try \/usr\/share\/dovecot\/protocols\.d/include_try \/e
 # Configures LDAP
 COPY target/dovecot/dovecot-ldap.conf.ext /etc/dovecot
 COPY target/postfix/ldap-users.cf target/postfix/ldap-groups.cf target/postfix/ldap-aliases.cf target/postfix/ldap-domains.cf /etc/postfix/
+
+# Configures OAUTH2
+COPY target/dovecot/dovecot-oauth2.plain.conf.ext target/dovecot/dovecot-oauth2.token.conf.ext /etc/dovecot/
 
 # Enables Spamassassin CRON updates and update hook for supervisor
 # hadolint ignore=SC2016
